@@ -38,7 +38,11 @@ class TrainViewSet(viewsets.ModelViewSet):
     serializer_class = TrainSerializer
 
 
-class StationViewSet(viewsets.ModelViewSet):
+class StationViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
     queryset = Station.objects.all()
     serializer_class = StationSerializer
 
@@ -48,7 +52,11 @@ class RouteViewSet(viewsets.ModelViewSet):
     serializer_class = RouteSerializer
 
 
-class CrewViewSet(viewsets.ModelViewSet):
+class CrewViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
     queryset = Crew.objects.all()
     serializer_class = CrewSerializer
 
