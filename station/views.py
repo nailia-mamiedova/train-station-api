@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 
 from station.models import (
     TrainType,
@@ -24,7 +24,11 @@ from station.serializers import (
 )
 
 
-class TrainTypesViewSet(viewsets.ModelViewSet):
+class TrainTypesViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
     queryset = TrainType.objects.all()
     serializer_class = TrainTypeSerializer
 
