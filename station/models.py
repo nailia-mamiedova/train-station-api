@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -21,16 +22,16 @@ class Train(models.Model):
 
 class Station(models.Model):
     name = models.CharField(max_length=255)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)],)
+    longitude = models.FloatField(validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)],)
 
     def __str__(self):
         return self.name
 
 
 class Route(models.Model):
-    source = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='source')
-    destination = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='destination')
+    source = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="source")
+    destination = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="destination")
     distance = models.IntegerField()
 
     def __str__(self):
