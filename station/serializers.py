@@ -54,16 +54,6 @@ class CrewSerializer(serializers.ModelSerializer):
 
 
 class TripSerializer(serializers.ModelSerializer):
-    route = serializers.SlugRelatedField(
-        slug_field="id", queryset=Route.objects.all()
-    )
-    train = serializers.SlugRelatedField(
-        slug_field="name", queryset=Train.objects.all()
-    )
-    crews = serializers.SlugRelatedField(
-        slug_field="full_name", queryset=Crew.objects.all(), many=True
-    )
-
     class Meta:
         model = Trip
         fields = ("id", "route", "train", "departure_time", "arrival_time", "crews")
@@ -81,6 +71,9 @@ class TripListSerializer(TripSerializer):
 class TripDetailSerializer(TripSerializer):
     route = RouteSerializer()
     train = TrainSerializer()
+    crews = serializers.SlugRelatedField(
+        many=True, slug_field="full_name", queryset=Crew.objects.all()
+    )
 
 
 class OrderSerializer(serializers.ModelSerializer):
