@@ -59,6 +59,15 @@ class TripViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             queryset = queryset.select_related("train__train_type").prefetch_related("crews")
 
+        source = self.request.query_params.get("source")
+        destination = self.request.query_params.get("destination")
+
+        if source:
+            queryset = queryset.filter(route__source__name__icontains=source)
+
+        if destination:
+            queryset = queryset.filter(route__destination__name__icontains=destination)
+
         return queryset
 
     def get_serializer_class(self):
