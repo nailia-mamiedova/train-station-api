@@ -50,6 +50,7 @@ class Trip(models.Model):
     train = models.ForeignKey(Train, on_delete=models.CASCADE)
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
+    crews = models.ManyToManyField(Crew)
 
     def __str__(self):
         return f"{str(self.route)} ({self.departure_time} - {self.arrival_time})"

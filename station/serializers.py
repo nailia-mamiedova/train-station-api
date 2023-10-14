@@ -60,10 +60,13 @@ class TripSerializer(serializers.ModelSerializer):
     train = serializers.SlugRelatedField(
         slug_field="name", queryset=Train.objects.all()
     )
+    crews = serializers.SlugRelatedField(
+        slug_field="full_name", queryset=Crew.objects.all(), many=True
+    )
 
     class Meta:
         model = Trip
-        fields = ("id", "route", "train", "departure_time", "arrival_time")
+        fields = ("id", "route", "train", "departure_time", "arrival_time", "crews")
 
 
 class OrderSerializer(serializers.ModelSerializer):
