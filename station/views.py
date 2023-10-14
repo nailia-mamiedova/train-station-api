@@ -50,8 +50,16 @@ class CrewViewSet(viewsets.ModelViewSet):
 
 
 class TripViewSet(viewsets.ModelViewSet):
-    queryset = Trip.objects.prefetch_related("route__source", "route__destination")
+    queryset = Trip.objects.select_related("route__source", "route__destination")
     serializer_class = TripSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        if self.action == "retrieve":
+            queryset = queryset.select_related("train__train_type").prefetch_related("crews")
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
