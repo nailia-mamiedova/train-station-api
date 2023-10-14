@@ -19,6 +19,8 @@ from station.serializers import (
     TripSerializer,
     OrderSerializer,
     TicketSerializer,
+    TripListSerializer,
+    TripDetailSerializer,
 )
 
 
@@ -48,8 +50,17 @@ class CrewViewSet(viewsets.ModelViewSet):
 
 
 class TripViewSet(viewsets.ModelViewSet):
-    queryset = Trip.objects.all()
+    queryset = Trip.objects.prefetch_related("route__source", "route__destination")
     serializer_class = TripSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return TripListSerializer
+
+        if self.action == "retrieve":
+            return TripDetailSerializer
+
+        return TripSerializer
 
 
 class OrderViewSet(viewsets.ModelViewSet):
