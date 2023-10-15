@@ -10,7 +10,6 @@ from station.models import (
     Crew,
     Trip,
     Order,
-    Ticket,
 )
 from station.permissions import IsAdminOrIfAuthenticatedReadOnly
 from station.serializers import (
@@ -21,7 +20,6 @@ from station.serializers import (
     CrewSerializer,
     TripSerializer,
     OrderSerializer,
-    TicketSerializer,
     TripListSerializer,
     TripDetailSerializer,
     RouteDetailSerializer,
@@ -134,10 +132,4 @@ class OrderViewSet(
 ):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-
-
-class TicketViewSet(viewsets.ModelViewSet):
-    queryset = Ticket.objects.all()
-    serializer_class = TicketSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
