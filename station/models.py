@@ -109,3 +109,7 @@ class Ticket(models.Model):
             raise ValidationError(
                 f"Seat number must be between 1 and {self.trip.train.places_in_cargo}"
             )
+        if not self.trip.train.cargo_num >= self.cargo >= 1:
+            raise ValidationError(
+                f"Cargo number must be between 1 and {self.trip.train.cargo_num}"
+            )
