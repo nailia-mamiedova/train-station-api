@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class TrainType(models.Model):
@@ -102,3 +103,9 @@ class Ticket(models.Model):
     class Meta:
         unique_together = ("trip", "cargo", "seat")
         ordering = ["cargo", "seat"]
+
+    def clean(self):
+        if not self.trip.train.places_in_cargo >= self.seat >= 1:
+            raise ValidationError(
+                f"Seat number must be between 1 and {self.trip.train.places_in_cargo}"
+            )
