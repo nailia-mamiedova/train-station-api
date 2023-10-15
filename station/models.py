@@ -19,6 +19,10 @@ class Train(models.Model):
     def __str__(self):
         return f"{self.name} ({self.train_type})"
 
+    @property
+    def capacity(self):
+        return self.cargo_num * self.places_in_cargo
+
 
 class Station(models.Model):
     name = models.CharField(max_length=255)
