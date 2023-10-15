@@ -23,6 +23,9 @@ class Train(models.Model):
     def capacity(self):
         return self.cargo_num * self.places_in_cargo
 
+    class Meta:
+        ordering = ["name"]
+
 
 class Station(models.Model):
     name = models.CharField(max_length=255)
@@ -68,6 +71,9 @@ class Trip(models.Model):
     def __str__(self):
         return f"{str(self.route)} ({self.departure_time} - {self.arrival_time})"
 
+    class Meta:
+        ordering = ["-departure_time"]
+
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -77,6 +83,9 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.created_at)
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
