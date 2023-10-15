@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import viewsets, mixins
 
 from station.models import (
@@ -73,6 +75,16 @@ class TripViewSet(viewsets.ModelViewSet):
 
         source = self.request.query_params.get("source")
         destination = self.request.query_params.get("destination")
+        departure_time = self.request.query_params.get("departure_time")
+        arrival_time = self.request.query_params.get("arrival_time")
+
+        if departure_time:
+            departure_time = datetime.strptime(departure_time, "%Y-%m-%d").date()
+            queryset = queryset.filter(departure_time__date=departure_time)
+
+        if arrival_time:
+            arrival_time = datetime.strptime(arrival_time, "%Y-%m-%d").date()
+            queryset = queryset.filter(arrival_time__date=arrival_time)
 
         if source:
             queryset = queryset.filter(route__source__name__icontains=source)
