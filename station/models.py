@@ -32,6 +32,10 @@ class Station(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def coordinates(self):
+        return f"{self.latitude}, {self.longitude}"
+
 
 class Route(models.Model):
     source = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="source")

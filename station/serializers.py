@@ -47,6 +47,22 @@ class RouteSerializer(serializers.ModelSerializer):
         fields = ("id", "source", "destination", "distance")
 
 
+class RouteDetailSerializer(RouteSerializer):
+    coordinates_source = serializers.CharField(source="source.coordinates")
+    coordinates_destination = serializers.CharField(source="destination.coordinates")
+
+    class Meta:
+        model = Route
+        fields = (
+            "id",
+            "source",
+            "coordinates_source",
+            "destination",
+            "coordinates_destination",
+            "distance"
+        )
+
+
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crew
