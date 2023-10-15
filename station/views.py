@@ -40,7 +40,7 @@ class TrainViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Train.objects.all()
+    queryset = Train.objects.select_related("train_type")
     serializer_class = TrainSerializer
 
 
