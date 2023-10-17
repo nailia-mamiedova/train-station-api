@@ -83,15 +83,14 @@ class TripListSerializer(TripSerializer):
 
     class Meta:
         model = Trip
-        fields = ("id", "route_source", "route_destination", "train", "departure_time", "arrival_time")
-
-
-class TripDetailSerializer(TripSerializer):
-    route = RouteSerializer()
-    train = TrainSerializer()
-    crews = serializers.SlugRelatedField(
-        many=True, slug_field="full_name", queryset=Crew.objects.all()
-    )
+        fields = (
+            "id",
+            "route_source",
+            "route_destination",
+            "train",
+            "departure_time",
+            "arrival_time",
+        )
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -105,6 +104,33 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ("id", "cargo", "seat", "trip", "order")
+
+
+class TicketSeatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ("cargo", "seat")
+
+
+class TripDetailSerializer(TripSerializer):
+    route = RouteSerializer()
+    train = TrainSerializer()
+    crews = serializers.SlugRelatedField(
+        many=True, slug_field="full_name", queryset=Crew.objects.all()
+    )
+    taken_tickets = TicketSeatSerializer(many=True, read_only=True, source="tickets")
+
+    class Meta:
+        model = Trip
+        fields = (
+            "id",
+            "route",
+            "train",
+            "departure_time",
+            "arrival_time",
+            "crews",
+            "taken_seats"
+        )
 
 
 class OrderSerializer(serializers.ModelSerializer):
