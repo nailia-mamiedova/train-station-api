@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from rest_framework import viewsets, mixins
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 
 from station.models import (
     TrainType,
@@ -125,6 +127,11 @@ class TripViewSet(viewsets.ModelViewSet):
         return TripSerializer
 
 
+class OrderPagination(PageNumberPagination):
+    page_size = 10
+    max_page_size = 100
+
+
 class OrderViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
@@ -132,7 +139,8 @@ class OrderViewSet(
 ):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    pagination_class = OrderPagination
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
