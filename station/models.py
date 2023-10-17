@@ -121,3 +121,15 @@ class Ticket(models.Model):
     def clean(self):
         Ticket.validate_cargo(self.cargo, self.trip.train.cargo_num, ValidationError)
         Ticket.validate_seat(self.seat, self.trip.train.places_in_cargo, ValidationError)
+
+    def save(
+        self,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
+    ):
+        self.full_clean()
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
