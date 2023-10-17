@@ -104,12 +104,20 @@ class Ticket(models.Model):
         unique_together = ("trip", "cargo", "seat")
         ordering = ["cargo", "seat"]
 
+    @staticmethod
+    def validate_cargo(cargo: int, cargo_num: int, error_to_raise):
+        if not cargo_num >= cargo >= 1:
+            raise error_to_raise(
+                f"Cargo number must be between 1 and {cargo_num}"
+            )
+
+    @staticmethod
+    def validate_seat(seat, seat_num, error_to_raise):
+        if not seat_num >= seat >= 1:
+            raise error_to_raise(
+                f"Seat number must be between 1 and {seat_num}"
+            )
+
     def clean(self):
-        if not self.trip.train.places_in_cargo >= self.seat >= 1:
-            raise ValidationError(
-                f"Seat number must be between 1 and {self.trip.train.places_in_cargo}"
-            )
-        if not self.trip.train.cargo_num >= self.cargo >= 1:
-            raise ValidationError(
-                f"Cargo number must be between 1 and {self.trip.train.cargo_num}"
-            )
+        Ticket.validate_cargo(self.cargo, self.trip.train.cargo_num, ValidationError)
+        Ticket.validate_seat(self.seat, self.trip.train.places_in_cargo, ValidationError)
