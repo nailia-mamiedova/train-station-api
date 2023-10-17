@@ -30,8 +30,14 @@ class Train(models.Model):
 
 class Station(models.Model):
     name = models.CharField(max_length=255)
-    latitude = models.FloatField(validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)],)
-    longitude = models.FloatField(validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)],)
+    latitude = (models.FloatField
+                (validators=[MinValueValidator(-90.0),
+                             MaxValueValidator(90.0)],)
+                )
+    longitude = models.FloatField(
+        validators=[MinValueValidator(-180.0),
+                    MaxValueValidator(180.0)],
+    )
 
     def __str__(self):
         return self.name
@@ -42,8 +48,16 @@ class Station(models.Model):
 
 
 class Route(models.Model):
-    source = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="source")
-    destination = models.ForeignKey(Station, on_delete=models.CASCADE, related_name="destination")
+    source = models.ForeignKey(
+        Station,
+        on_delete=models.CASCADE,
+        related_name="source"
+    )
+    destination = models.ForeignKey(
+        Station,
+        on_delete=models.CASCADE,
+        related_name="destination"
+    )
     distance = models.IntegerField()
 
     def __str__(self):
@@ -70,7 +84,8 @@ class Trip(models.Model):
     crews = models.ManyToManyField(Crew)
 
     def __str__(self):
-        return f"{str(self.route)} ({self.departure_time} - {self.arrival_time})"
+        return (f"{str(self.route)} "
+                f"({self.departure_time} - {self.arrival_time})")
 
     class Meta:
         ordering = ["-departure_time"]
@@ -95,7 +110,11 @@ class Ticket(models.Model):
     trip = models.ForeignKey(
         Trip, on_delete=models.CASCADE, related_name="tickets"
     )
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
 
     def __str__(self):
         return f"{str(self.trip)}(cargo: {self.cargo}, seat: {self.seat})"
@@ -119,8 +138,16 @@ class Ticket(models.Model):
             )
 
     def clean(self):
-        Ticket.validate_cargo(self.cargo, self.trip.train.cargo_num, ValidationError)
-        Ticket.validate_seat(self.seat, self.trip.train.places_in_cargo, ValidationError)
+        Ticket.validate_cargo(
+            self.cargo,
+            self.trip.train.cargo_num,
+            ValidationError
+        )
+        Ticket.validate_seat(
+            self.seat,
+            self.trip.train.places_in_cargo,
+            ValidationError
+        )
 
     def save(
         self,

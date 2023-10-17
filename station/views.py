@@ -2,7 +2,11 @@ from datetime import datetime
 
 from django.db.models import F, Count
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiParameter,
+    OpenApiExample
+)
 from rest_framework import viewsets, mixins
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -93,11 +97,11 @@ class TripViewSet(viewsets.ModelViewSet):
     queryset = Trip.objects.select_related(
         "route__source", "route__destination"
     ).annotate(
-            tickets_available=(
-                F("train__cargo_num") * F("train__places_in_cargo")
-                - Count("tickets")
-            )
+        tickets_available=(
+            F("train__cargo_num") * F("train__places_in_cargo")
+            - Count("tickets")
         )
+    )
     serializer_class = TripSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
@@ -105,7 +109,9 @@ class TripViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
 
         if self.action == "retrieve":
-            queryset = queryset.select_related("train__train_type").prefetch_related("crews")
+            queryset = queryset.select_related(
+                "train__train_type"
+            ).prefetch_related("crews")
 
         source = self.request.query_params.get("source")
         destination = self.request.query_params.get("destination")
@@ -113,7 +119,9 @@ class TripViewSet(viewsets.ModelViewSet):
         arrival_time = self.request.query_params.get("arrival_time")
 
         if departure_time:
-            departure_time = datetime.strptime(departure_time, "%Y-%m-%d").date()
+            departure_time = datetime.strptime(
+                departure_time, "%Y-%m-%d"
+            ).date()
             queryset = queryset.filter(departure_time__date=departure_time)
 
         if arrival_time:
@@ -124,7 +132,9 @@ class TripViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(route__source__name__icontains=source)
 
         if destination:
-            queryset = queryset.filter(route__destination__name__icontains=destination)
+            queryset = queryset.filter(
+                route__destination__name__icontains=destination
+            )
 
         return queryset.distinct()
 
@@ -153,7 +163,8 @@ class TripViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "destination",
                 type=OpenApiTypes.STR,
-                description="Filter by destination station (ex. ?destination=Lviv)",
+                description="Filter by destination station "
+                            "(ex. ?destination=Lviv)",
                 examples=[
                     OpenApiExample(
                         "Example",
@@ -164,7 +175,8 @@ class TripViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "departure_time",
                 type=OpenApiTypes.DATE,
-                description="Filter by departure date (ex. ?departure_time=2023-10-31)",
+                description="Filter by departure date "
+                            "(ex. ?departure_time=2023-10-31)",
                 examples=[
                     OpenApiExample(
                         "Example",
@@ -175,7 +187,8 @@ class TripViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "arrival_time",
                 type=OpenApiTypes.DATE,
-                description="Filter by arrival date (ex. ?arrival_time=2023-11-01)",
+                description="Filter by arrival date "
+                            "(ex. ?arrival_time=2023-11-01)",
                 examples=[
                     OpenApiExample(
                         "Example",
