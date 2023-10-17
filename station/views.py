@@ -28,6 +28,7 @@ from station.serializers import (
     TripListSerializer,
     TripDetailSerializer,
     RouteDetailSerializer,
+    OrderListSerializer,
 )
 
 
@@ -125,7 +126,7 @@ class TripViewSet(viewsets.ModelViewSet):
         if destination:
             queryset = queryset.filter(route__destination__name__icontains=destination)
 
-        return queryset
+        return queryset.distinct()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -202,6 +203,12 @@ class OrderViewSet(
     serializer_class = OrderSerializer
     pagination_class = OrderPagination
     permission_classes = (IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderListSerializer
+
+        return OrderSerializer
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
