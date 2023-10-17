@@ -103,7 +103,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = ("id", "cargo", "seat", "trip", "order")
+        fields = ("id", "cargo", "seat", "trip")
 
 
 class TicketSeatSerializer(serializers.ModelSerializer):
@@ -118,7 +118,7 @@ class TripDetailSerializer(TripSerializer):
     crews = serializers.SlugRelatedField(
         many=True, slug_field="full_name", queryset=Crew.objects.all()
     )
-    taken_tickets = TicketSeatSerializer(many=True, read_only=True, source="tickets")
+    taken_seats = TicketSeatSerializer(many=True, read_only=True, source="tickets")
 
     class Meta:
         model = Trip
