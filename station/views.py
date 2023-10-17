@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.db.models import F, Count
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, mixins
@@ -88,7 +89,14 @@ class CrewViewSet(
 
 
 class TripViewSet(viewsets.ModelViewSet):
-    queryset = Trip.objects.select_related("route__source", "route__destination")
+    queryset = Trip.objects.select_related(
+        "route__source", "route__destination"
+    ).annotate(
+            tickets_available=(
+                F("train__cargo_num") * F("train__places_in_cargo")
+                - Count("tickets")
+            )
+        )
     serializer_class = TripSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 

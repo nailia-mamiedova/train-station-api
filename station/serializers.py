@@ -80,6 +80,7 @@ class TripListSerializer(TripSerializer):
     route_source = serializers.CharField(source="route.source.name")
     route_destination = serializers.CharField(source="route.destination.name")
     train = serializers.CharField(source="train.name")
+    tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Trip
@@ -90,6 +91,7 @@ class TripListSerializer(TripSerializer):
             "train",
             "departure_time",
             "arrival_time",
+            "tickets_available"
         )
 
 
