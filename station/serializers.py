@@ -95,13 +95,6 @@ class TripDetailSerializer(TripSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    trip = serializers.SlugRelatedField(
-        slug_field="id", queryset=Trip.objects.all()
-    )
-    order = serializers.SlugRelatedField(
-        slug_field="id", queryset=Order.objects.all()
-    )
-
     class Meta:
         model = Ticket
         fields = ("id", "cargo", "seat", "trip", "order")
