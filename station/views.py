@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from rest_framework import viewsets, mixins
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -125,6 +127,57 @@ class TripViewSet(viewsets.ModelViewSet):
             return TripDetailSerializer
 
         return TripSerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "source",
+                type=OpenApiTypes.STR,
+                description="Filter by source station (ex. ?source=Kiev)",
+                examples=[
+                    OpenApiExample(
+                        "Example",
+                        value="Kyiv",
+                    )
+                ],
+            ),
+            OpenApiParameter(
+                "destination",
+                type=OpenApiTypes.STR,
+                description="Filter by destination station (ex. ?destination=Lviv)",
+                examples=[
+                    OpenApiExample(
+                        "Example",
+                        value="Lviv",
+                    )
+                ]
+            ),
+            OpenApiParameter(
+                "departure_time",
+                type=OpenApiTypes.DATE,
+                description="Filter by departure date (ex. ?departure_time=2023-10-31)",
+                examples=[
+                    OpenApiExample(
+                        "Example",
+                        value="2023-10-31",
+                    )
+                ]
+            ),
+            OpenApiParameter(
+                "arrival_time",
+                type=OpenApiTypes.DATE,
+                description="Filter by arrival date (ex. ?arrival_time=2023-11-01)",
+                examples=[
+                    OpenApiExample(
+                        "Example",
+                        value="2023-11-01",
+                    )
+                ]
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class OrderPagination(PageNumberPagination):
