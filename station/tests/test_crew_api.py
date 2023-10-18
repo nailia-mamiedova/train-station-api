@@ -83,3 +83,12 @@ class AdminCrewApiTests(TestCase):
         crew = Crew.objects.get(id=res.data["id"])
         for key in payload.keys():
             self.assertEqual(payload[key], getattr(crew, key))
+
+    def test_crew_list_full_name(self):
+        crew = sample_crew()
+        full_name = f"{crew.first_name} {crew.last_name}"
+
+        res = self.client.get(CREW_URL)
+        res_full_name = res.data[0]["full_name"]
+
+        self.assertEqual(full_name, res_full_name)
