@@ -33,6 +33,7 @@ from station.serializers import (
     TripDetailSerializer,
     RouteDetailSerializer,
     OrderListSerializer,
+    RouteListSerializer,
 )
 
 
@@ -77,6 +78,9 @@ class RouteViewSet(
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
+        if self.action == "list":
+            return RouteListSerializer
+
         if self.action == "retrieve":
             return RouteDetailSerializer
 
