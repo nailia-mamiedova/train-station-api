@@ -1,0 +1,114 @@
+[
+    {"model": "station.traintype", "pk": 5, "fields": {"name": "EuroCity"}},
+    {"model": "station.traintype", "pk": 6, "fields": {"name": "InterCity+"}},
+    {"model": "station.traintype", "pk": 7, "fields": {"name": "InterCity"}},
+    {"model": "station.traintype", "pk": 8, "fields": {"name": "Regional Express"}},
+    {"model": "station.traintype", "pk": 9, "fields": {"name": "Regional train"}},
+    {"model": "station.traintype", "pk": 10, "fields": {"name": "Euro Night"}},
+    {"model": "station.traintype", "pk": 11, "fields": {"name": "Night Express"}},
+    {"model": "station.traintype", "pk": 12, "fields": {"name": "Night fast"}},
+    {"model": "station.traintype", "pk": 13, "fields": {"name": "Night passenger"}},
+    {
+        "model": "station.train",
+        "pk": 2,
+        "fields": {
+            "name": "Hyundai Rotem HRCS2 multiple unit",
+            "cargo_num": 9,
+            "places_in_cargo": 64,
+            "train_type": 6
+        }
+    },
+    {
+        "model": "station.train",
+        "pk": 3,
+        "fields": {
+            "name": "Škoda UZ class 675",
+            "cargo_num": 5,
+            "places_in_cargo": 62,
+            "train_type": 7
+        }
+    },
+    {
+        "model": "station.station",
+        "pk": 1,
+        "fields": {
+            "name": "Kyiv-Passenger",
+            "latitude": 50.437664916,
+            "longitude": 30.486998052
+        }
+    },
+    {
+        "model": "station.station",
+        "pk": 2,
+        "fields": {
+            "name": "Lviv",
+            "latitude": 49.8372116511,
+            "longitude": 23.9900393732
+        }
+    },
+    {
+        "model": "station.station",
+        "pk": 3,
+        "fields": {
+            "name": "Kharkiv-Passenger",
+            "latitude": 49.989722,
+            "longitude": 36.203611
+        }
+    },
+    {
+        "model": "station.station",
+        "pk": 4,
+        "fields": {
+            "name": "Dnipro-Holovnyi",
+            "latitude": 48.477488,
+            "longitude": 35.015152
+        }
+    },
+    {
+        "model": "station.route",
+        "pk": 1,
+        "fields": {"source": 1, "destination": 2, "distance": 570}
+    },
+    {
+        "model": "station.route",
+        "pk": 2,
+        "fields": {"source": 3, "destination": 4, "distance": 297}
+    },
+    {
+        "model": "station.crew",
+        "pk": 1,
+        "fields": {"first_name": "Daria", "last_name": "Kubik"}
+    },
+    {
+        "model": "station.crew",
+        "pk": 2,
+        "fields": {"first_name": "Viktor", "last_name": "Pavlik"}
+    },
+    {
+        "model": "station.crew",
+        "pk": 3,
+        "fields": {"first_name": "Andriy", "last_name": "Luzan"}
+    },
+    {
+        "model": "station.trip",
+        "pk": 1,
+        "fields": {
+            "route": 1,
+            "train": 2,
+            "departure_time": "2023-11-01T06:20:00Z",
+            "arrival_time": "2023-11-01T11:56:00Z",
+            "crews": [2, 3]
+        }
+    },
+    {
+        "model": "station.trip",
+        "pk": 2,
+        "fields": {
+            "route": 2,
+            "train": 3,
+            "departure_time": "2023-10-31T11:15:00Z",
+            "arrival_time": "2023-10-31T19:24:00Z",
+            "crews": [1, 3]
+        }
+    }
+]

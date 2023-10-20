@@ -9,8 +9,12 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
+from datetime import timedelta
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +24,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure--&x%b!v##+c(yqzk5$r^17@067m+1!e6n#y+=ody(_yfmfu+&#"
+SECRET_KEY = os.getenv("SECRET_KEY", default="secret_key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS").split(" ")
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 
 # Application definition
@@ -37,12 +45,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
+    "rest_framework_simplejwt",
+    "rest_framework",
+    "debug_toolbar",
     "station",
     "user",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -77,29 +91,38 @@ WSGI_APPLICATION = "train_station.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", default="postgres"),
+        "USER": os.getenv("POSTGRES_USER", default="postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="postgres"),
+        "HOST": os.getenv("POSTGRES_HOST", default="localhost"),
+        "PORT": os.getenv("POSTGRES_PORT", default="5432"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation."
+                "UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "django.contrib.auth.password_validation."
+                "MinimumLengthValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+                "CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+                "NumericPasswordValidator",
     },
 ]
+
+AUTH_USER_MODEL = "user.User"
 
 
 # Internationalization
@@ -111,7 +134,7 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -123,3 +146,31 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {"anon": "10/hour", "user": "30/hour"},
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Train Station API",
+    "DESCRIPTION": "Train station management with tickets ordering",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    "REDOC_DIST": "SIDECAR",
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+}
