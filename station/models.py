@@ -30,13 +30,15 @@ class Train(models.Model):
 
 class Station(models.Model):
     name = models.CharField(max_length=255)
-    latitude = (models.FloatField
-                (validators=[MinValueValidator(-90.0),
-                             MaxValueValidator(90.0)],)
-                )
+    latitude = models.FloatField(
+        validators=[MinValueValidator(-90.0),
+                    MaxValueValidator(90.0)],
+        null=True,
+    )
     longitude = models.FloatField(
         validators=[MinValueValidator(-180.0),
                     MaxValueValidator(180.0)],
+        null=True,
     )
 
     def __str__(self):
